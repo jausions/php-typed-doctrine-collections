@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Callables;
+use Abacus11\Doctrine\Collections\Callables;
 use PHPUnit\Framework\TestCase;
 
 class CallablesTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Callables::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Callables::__construct()
      */
     public function testCallableCollectionAcceptsOnlyCallables()
     {

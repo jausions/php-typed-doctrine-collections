@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Doubles;
+use Abacus11\Doctrine\Collections\Doubles;
 use PHPUnit\Framework\TestCase;
 
 class DoublesTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Doubles::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Doubles::__construct()
      */
     public function testDoubleCollectionAcceptsOnlyDoubles()
     {

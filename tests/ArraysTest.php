@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Arrays;
+use Abacus11\Doctrine\Collections\Arrays;
 use PHPUnit\Framework\TestCase;
 
 class ArraysTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Arrays::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Arrays::__construct()
      */
     public function testArrayCollectionAcceptsOnlyArrays()
     {

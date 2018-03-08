@@ -1,8 +1,8 @@
 <?php
 
-namespace Abacus11\Collections\Doctrine;
+namespace Abacus11\Doctrine\Collections;
 
-class Numbers extends ArrayOf
+class Numbers extends CollectionOf
 {
     /**
      * Collection of numbers

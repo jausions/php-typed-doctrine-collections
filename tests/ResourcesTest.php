@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Resources;
+use Abacus11\Doctrine\Collections\Resources;
 use PHPUnit\Framework\TestCase;
 
 class ResourcesTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Resources::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Resources::__construct()
      */
     public function testResourceCollectionAcceptsOnlyResources()
     {

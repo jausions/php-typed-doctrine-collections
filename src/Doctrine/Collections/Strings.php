@@ -1,13 +1,13 @@
 <?php
 
-namespace Abacus11\Collections\Doctrine;
+namespace Abacus11\Doctrine\Collections;
 
-class JSONs extends ArrayOf
+class Strings extends CollectionOf
 {
     /**
-     * Collection of JSON strings
+     * Collection of strings
      *
-     * Each element of the collection is a JSON string
+     * Each element of the collection is a string
      *
      * @param string[] $elements
      *
@@ -17,6 +17,6 @@ class JSONs extends ArrayOf
      */
     public function __construct(array $elements = [])
     {
-        parent::__construct('json', $elements);
+        parent::__construct('string', $elements);
     }
 }

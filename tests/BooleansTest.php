@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Booleans;
+use Abacus11\Doctrine\Collections\Booleans;
 use PHPUnit\Framework\TestCase;
 
 class BooleansTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Booleans::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Booleans::__construct()
      */
     public function testBooleanCollectionAcceptsOnlyBooleans()
     {

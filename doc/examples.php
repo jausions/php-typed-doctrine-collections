@@ -1,19 +1,19 @@
 <?php
 
 require '../vendor/autoload.php';
-use Abacus11\Collections\Doctrine\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 
 
 ## Type Defined by Initial Value
 
-$int_array = new ArrayOf([1, 2]);
+$int_array = new CollectionOf([1, 2]);
 try {
-    $int_array = new ArrayOf([1, '2']);
+    $int_array = new CollectionOf([1, '2']);
 } catch (\TypeError $e) {
     echo ' 1. '.$e->getMessage().PHP_EOL;
 }
 try {
-    $int_array = new ArrayOf([null, 1]);
+    $int_array = new CollectionOf([null, 1]);
 } catch (\InvalidArgumentException $e) {
     echo ' 2. '.$e->getMessage().PHP_EOL;
 }
@@ -22,7 +22,7 @@ try {
 ## Type Defined by a Sample Value
 
 $sample = 1;
-$int_array = (new ArrayOf())->setElementTypeLike($sample);
+$int_array = (new CollectionOf())->setElementTypeLike($sample);
 
 $int_array[] = 2;
 try {
@@ -34,7 +34,7 @@ try {
 class SomeClass {}
 
 $sample = new SomeClass();
-$some = (new ArrayOf())->setElementTypeLike($sample);
+$some = (new CollectionOf())->setElementTypeLike($sample);
 
 $some[] = new SomeClass();
 try {
@@ -48,7 +48,7 @@ try {
 
 // Use setElementType() method
 
-$positive_int = (new ArrayOf())->setElementType(function ($value) {
+$positive_int = (new CollectionOf())->setElementType(function ($value) {
     if (!is_integer($value)) {
         return false;
     }
@@ -65,7 +65,7 @@ try {
 
 // Or directly in the constructor
 
-$negative_int = new ArrayOf(
+$negative_int = new CollectionOf(
     function ($value) {
         if (!is_integer($value)) {
             return false;
@@ -92,7 +92,7 @@ class AA extends A {}
 
 // Use the setElementType() method
 
-$some_a = (new ArrayOf())->setElementType(A::class);
+$some_a = (new CollectionOf())->setElementType(A::class);
 
 $some_a[] = new A();
 $some_a[] = new AA();
@@ -104,7 +104,7 @@ try {
 
 // Or directly in the constructor
 
-$some_b = new ArrayOf(B::class);
+$some_b = new CollectionOf(B::class);
 
 $some_b[] = new B();
 try {
@@ -118,7 +118,7 @@ try {
 
 // Use the setElementType() method
 
-$int_array = (new ArrayOf())->setElementType('integer');
+$int_array = (new CollectionOf())->setElementType('integer');
 
 $int_array[] = 1;
 try {
@@ -129,7 +129,7 @@ try {
 
 // Or directly in the constructor
 
-$int_array = new ArrayOf('integer');
+$int_array = new CollectionOf('integer');
 
 $int_array[] = 20;
 try {
@@ -141,7 +141,7 @@ try {
 
 ## Built-In Collections
 
-$integers = new \Abacus11\Collections\Doctrine\Integers([1, 2, 3, 0, -1]);
+$integers = new \Abacus11\Doctrine\Collections\Integers([1, 2, 3, 0, -1]);
 
 
 ## Custom Type Collections
@@ -163,7 +163,7 @@ class Submarine extends Vehicle
     public $name;
 }
 
-class Cars extends ArrayOf
+class Cars extends CollectionOf
 {
     /**
      * @param Car[] $cars

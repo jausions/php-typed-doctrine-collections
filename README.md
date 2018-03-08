@@ -16,7 +16,7 @@ refer to built-in PHP types, classes, and even application-domain types.
 ## Installation
 
 ```sh
-composer require jausions/php-typed-collections
+composer require jausions/php-typed-doctrine-collections
 ```
 
 In the examples below, the `require 'vendor/autoload.php';` is implied.
@@ -28,11 +28,11 @@ the elements that come after it.
 
 ```php
 <?php
-use Abacus11\Collections\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 
-$int_array = new ArrayOf([1, 2]);      // Okay
-$int_array = new ArrayOf([1, '2']);    // Not okay - throws \TypeError
-$int_array = new ArrayOf([null, 1]);   // Not okay - throws \InvalidArgumentException
+$int_array = new CollectionOf([1, 2]);      // Okay
+$int_array = new CollectionOf([1, '2']);    // Not okay - throws \TypeError
+$int_array = new CollectionOf([null, 1]);   // Not okay - throws \InvalidArgumentException
 ```
 
 ## Type Defined by a Sample Value
@@ -41,10 +41,10 @@ The element validation is done against the type of a sample value.
 
 ```php
 <?php
-use Abacus11\Collections\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 
 $sample = 1;
-$int_array = (new ArrayOf())->setElementTypeLike($sample);
+$int_array = (new CollectionOf())->setElementTypeLike($sample);
 
 $int_array[] = 2;              // Okay
 $int_array[] = true;           // Not okay - throws \TypeError exception
@@ -52,7 +52,7 @@ $int_array[] = true;           // Not okay - throws \TypeError exception
 class SomeClass {}
 
 $sample = new SomeClass();
-$some = (new ArrayOf())->setElementTypeLike($sample);
+$some = (new CollectionOf())->setElementTypeLike($sample);
 
 $some[] = new SomeClass();     // Okay
 $some[] = new stdClass();      // Not okay - throws \TypeError exception
@@ -64,11 +64,11 @@ The elements added to the collection can be checked with a closure:
 
 ```php
 <?php
-use Abacus11\Collections\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 
 // Use the setElementType() method
 
-$positive_int = (new ArrayOf())->setElementType(function ($value) {
+$positive_int = (new CollectionOf())->setElementType(function ($value) {
     if (!is_integer($value)) {
         return false;
     }
@@ -81,7 +81,7 @@ $positive_int['bananas'] = -5;    // Not okay - throws \TypeError exception
 
 // Or directly in the constructor
 
-$negative_int = new ArrayOf(
+$negative_int = new CollectionOf(
     function ($value) {
         if (!is_integer($value)) {
             return false;
@@ -101,7 +101,7 @@ Objects added to the collection can be checked against a class name:
 ```php
 <?php
 
-use Abacus11\Collections\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 
 class A {}
 
@@ -111,7 +111,7 @@ class AA extends A {}
 
 // Use the setElementType() method
 
-$some_a = (new ArrayOf())->setElementType(A::class);
+$some_a = (new CollectionOf())->setElementType(A::class);
 
 $some_a[] = new A();    // Okay
 $some_a[] = new AA();   // Okay
@@ -119,7 +119,7 @@ $some_a[] = new B();    // Not okay - throws \TypeError exception
 
 // Or directly in the constructor
 
-$some_b = new ArrayOf(B::class);
+$some_b = new CollectionOf(B::class);
 
 $some_b[] = new B();    // Okay
 $some_b[] = new A();    // Not okay - throws \TypeError exception
@@ -143,18 +143,18 @@ accepts the following values:
 
 ```php
 <?php
-use Abacus11\Collections\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 
 // Use the setElementType() method
 
-$int_array = (new ArrayOf())->setElementType('integer');
+$int_array = (new CollectionOf())->setElementType('integer');
 
 $int_array[] = 1;      // Okay
 $int_array[] = '1';    // Not okay - throws \TypeError exception
 
 // Or directly in the constructor
 
-$int_array = new ArrayOf('integer');
+$int_array = new CollectionOf('integer');
 
 $int_array[] = 20;     // Okay
 $int_array[] = true;   // Not okay - throws \TypeError exception
@@ -164,20 +164,20 @@ $int_array[] = true;   // Not okay - throws \TypeError exception
 
 Several typed collections are predefined:
 
-- `\Abacus11\Collections\Arrays`
-- `\Abacus11\Collections\Booleans`
-- `\Abacus11\Collections\Callables`
-- `\Abacus11\Collections\Doubles`
-- `\Abacus11\Collections\Integers`
-- `\Abacus11\Collections\Numbers`
-- `\Abacus11\Collections\JSONs`
-- `\Abacus11\Collections\Objects`
-- `\Abacus11\Collections\Resources`
-- `\Abacus11\Collections\Strings`
+- `\Abacus11\Doctrine\Collections\Arrays`
+- `\Abacus11\Doctrine\Collections\Booleans`
+- `\Abacus11\Doctrine\Collections\Callables`
+- `\Abacus11\Doctrine\Collections\Doubles`
+- `\Abacus11\Doctrine\Collections\Integers`
+- `\Abacus11\Doctrine\Collections\Numbers`
+- `\Abacus11\Doctrine\Collections\JSONs`
+- `\Abacus11\Doctrine\Collections\Objects`
+- `\Abacus11\Doctrine\Collections\Resources`
+- `\Abacus11\Doctrine\Collections\Strings`
 
 ```php
 <?php
-$integers = new \Abacus11\Collections\Integers([1, 2, 3, 0, -1]);
+$integers = new \Abacus11\Doctrine\Collections\Integers([1, 2, 3, 0, -1]);
 ```
 
 ## Custom Type Collections
@@ -188,7 +188,7 @@ interface.
 
 ```php
 <?php
-use Abacus11\Collections\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 
 class Vehicle
 {
@@ -207,7 +207,7 @@ class Submarine extends Vehicle
     public $name;
 }
 
-class Cars extends ArrayOf
+class Cars extends CollectionOf
 {
     /**
      * @param Car[] $cars

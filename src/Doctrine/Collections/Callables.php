@@ -1,8 +1,8 @@
 <?php
 
-namespace Abacus11\Collections\Doctrine;
+namespace Abacus11\Doctrine\Collections;
 
-class Callables extends ArrayOf
+class Callables extends CollectionOf
 {
     /**
      * Collection of callables

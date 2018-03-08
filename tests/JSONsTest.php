@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\JSONs;
+use Abacus11\Doctrine\Collections\JSONs;
 use PHPUnit\Framework\TestCase;
 
 class JSONsTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\JSONs::__construct()
+     * @covers \Abacus11\Doctrine\Collections\JSONs::__construct()
      */
     public function testJSONCollectionAcceptsOnlyJSON()
     {

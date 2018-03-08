@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\ArrayOf;
+use Abacus11\Doctrine\Collections\CollectionOf;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test cases for Abacus11\Collections\Doctrine\ArrayOf class
+ * Test cases for Abacus11\Collections\Doctrine\CollectionOf class
  */
-class ArrayOfTest extends TestCase
+class CollectionOfTest extends TestCase
 {
     /**
      * Provides a list of matching type / value pairs
@@ -40,7 +40,7 @@ class ArrayOfTest extends TestCase
             ])],
             ['resource', fopen(__FILE__, 'r')],
             [__CLASS__, $this],
-            [__CLASS__, new class extends ArrayOfTest {}],
+            [__CLASS__, new class extends CollectionOfTest {}],
         ];
     }
 
@@ -247,12 +247,11 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider basicTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::isElementType()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::isElementType()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::isElementType()
      */
     public function testValueIsValidForSameTypeCollection($type, $value): void
     {
-        $collection = (new ArrayOf())->setElementType($type);
+        $collection = (new CollectionOf())->setElementType($type);
         $this->assertTrue($collection->isElementType($value));
     }
 
@@ -261,12 +260,11 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider mismatchedBasicTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::isElementType()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::isElementType()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::isElementType()
      */
     public function testValueIsInvalidForMismatchedTypeCollection($type, $type_element, $value): void
     {
-        $collection = (new ArrayOf())->setElementType($type);
+        $collection = (new CollectionOf())->setElementType($type);
         $this->assertFalse($collection->isElementType($value));
     }
 
@@ -275,12 +273,12 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider basicTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::add()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::add()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
     public function testCanAddValueToSameTypeCollection($type, $value): void
     {
-        $collection = (new ArrayOf())->setElementType($type);
+        $collection = (new CollectionOf())->setElementType($type);
         $collection[] = $value;
         $this->assertEquals($value, $collection->first());
     }
@@ -289,12 +287,12 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider validJSONEncodedValuesProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::add()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::add()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
     public function testCanAddValidJSONToJSONCollection($value): void
     {
-        $collection = (new ArrayOf())->setElementType('json');
+        $collection = (new CollectionOf())->setElementType('json');
         $collection[] = $value;
         $this->assertEquals($value, $collection->first());
     }
@@ -303,12 +301,12 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider invalidJSONEncodedValuesProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::add()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::add()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
     public function testCannotAddInvalidJSONToJSONCollection($value): void
     {
-        $collection = (new ArrayOf())->setElementType('json');
+        $collection = (new CollectionOf())->setElementType('json');
 
         $this->expectException(\TypeError::class);
         $collection[] = $value;
@@ -320,24 +318,24 @@ class ArrayOfTest extends TestCase
      * @param mixed $element
      *
      * @dataProvider mismatchedBasicTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::add()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::add()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
     public function testCannotAddWrongBasicTypeToCollection($type_collection, $type_element, $element): void
     {
-        $collection = (new ArrayOf())->setElementType($type_collection);
+        $collection = (new CollectionOf())->setElementType($type_collection);
 
         $this->expectException(\TypeError::class);
         $collection[] = $element;
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::add()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::add()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
     public function testCannotAddElementToNonTypedCollection(): void
     {
-        $collection = new ArrayOf();
+        $collection = new CollectionOf();
 
         $this->expectException(\Error::class);
         $collection[] = true;
@@ -348,12 +346,12 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider basicTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::set()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::set()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
     public function testCanAddValueWithKeyToSameTypeCollection($type, $value): void
     {
-        $collection = (new ArrayOf())->setElementType($type);
+        $collection = (new CollectionOf())->setElementType($type);
         $collection['abc'] = $value;
         $this->assertEquals($value, $collection->first());
     }
@@ -362,12 +360,12 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider validJSONEncodedValuesProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::set()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::set()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
     public function testCanAddValidJSONWithKeyToJSONCollection($value): void
     {
-        $collection = (new ArrayOf())->setElementType('json');
+        $collection = (new CollectionOf())->setElementType('json');
         $collection['xyz'] = $value;
         $this->assertEquals($value, $collection->first());
     }
@@ -376,12 +374,12 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider invalidJSONEncodedValuesProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::set()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::set()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
     public function testCannotAddInvalidJSONWithKeyToJSONCollection($value): void
     {
-        $collection = (new ArrayOf())->setElementType('json');
+        $collection = (new CollectionOf())->setElementType('json');
 
         $this->expectException(\TypeError::class);
         $collection[123] = $value;
@@ -393,12 +391,12 @@ class ArrayOfTest extends TestCase
      * @param mixed $element
      *
      * @dataProvider mismatchedBasicTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::set()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::set()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
     public function testCannotAddWrongBasicTypeWithKeyToCollection($type_collection, $type_element, $element): void
     {
-        $collection = new ArrayOf();
+        $collection = new CollectionOf();
         $collection->setElementType($type_collection);
 
         $this->expectException(\TypeError::class);
@@ -406,24 +404,23 @@ class ArrayOfTest extends TestCase
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::set()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::set()
+     * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
     public function testCannotAddElementWithKeyToNonConfiguredCollection(): void
     {
-        $collection = new ArrayOf();
+        $collection = new CollectionOf();
 
         $this->expectException(\Error::class);
         $collection[0] = true;
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::setElementType()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::setElementType()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementType()
      */
     public function testCannotChangeTheTypeOfNonEmptyCollection(): void
     {
-        $collection = new ArrayOf();
+        $collection = new CollectionOf();
         $collection->setElementType('string');
         $collection[] = (\Faker\Factory::create())->word;
 
@@ -432,12 +429,11 @@ class ArrayOfTest extends TestCase
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::setElementType()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::setElementType()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementType()
      */
     public function testCannotChangeTheTypeOfTypedCollection(): void
     {
-        $collection = new ArrayOf();
+        $collection = new CollectionOf();
         $collection->setElementType('string');
 
         $this->expectException(\Exception::class);
@@ -445,13 +441,12 @@ class ArrayOfTest extends TestCase
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::setElementTypeLike()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::setElementTypeLike()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementTypeLike()
      */
     public function testCannotUseNullAsSampleType(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        (new ArrayOf())->setElementTypeLike(null);
+        (new CollectionOf())->setElementTypeLike(null);
     }
 
     /**
@@ -460,12 +455,11 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider sampleTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::setElementTypeLike()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::setElementTypeLike()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementTypeLike()
      */
     public function testCanAddValidValueToLikeElementTypeCollection($type, $sample, $value): void
     {
-        $collection = new ArrayOf();
+        $collection = new CollectionOf();
         $collection->setElementTypeLike($sample)
             ->add($value);
         $this->assertEquals($value, $collection->first());
@@ -478,70 +472,69 @@ class ArrayOfTest extends TestCase
      * @param mixed $value
      *
      * @dataProvider mismatchedSampleTypedElementsProvider
-     * @covers \Abacus11\Collections\Doctrine\TypedCollectionTrait::setElementTypeLike()
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::setElementTypeLike()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementTypeLike()
      */
     public function testCannotAddInvalidValueToLikeElementTypeCollection($sample_type, $sample, $value_type, $value): void
     {
-        $collection = (new ArrayOf())->setElementTypeLike($sample);
+        $collection = (new CollectionOf())->setElementTypeLike($sample);
 
         $this->expectException(\TypeError::class);
         $collection[] = $value;
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::__construct()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
     public function testFirstElementBlocksWrongInitialValues()
     {
         $this->expectException(\TypeError::class);
-        new ArrayOf([1, '2', false, 2.5]);
+        new CollectionOf([1, '2', false, 2.5]);
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::__construct()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
     public function testFirstElementSetsTypeOfCollection()
     {
-        $collection = new ArrayOf([1]);
+        $collection = new CollectionOf([1]);
 
         $this->expectException(\TypeError::class);
         $collection[] = 'xyz';
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::__construct()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
     public function testFirstElementLetsValidInitialValues()
     {
-        $collection = new ArrayOf([0, 1, 2, 3, 4]);
+        $collection = new CollectionOf([0, 1, 2, 3, 4]);
         $this->assertEquals($collection[4], 4);
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::__construct()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
     public function testCannotInitializeCollectionWithNullValue()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new ArrayOf([null, 'abc']);
+        new CollectionOf([null, 'abc']);
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::__construct()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
     public function testCannotInitializeCollectionWithNullType()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new ArrayOf(null, ['abc', 'xyz']);
+        new CollectionOf(null, ['abc', 'xyz']);
     }
 
     /**
-     * @covers \Abacus11\Collections\Doctrine\ArrayOf::__construct()
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
     public function testCannotInitializeCollectionWithNullSingleArgument()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new ArrayOf(null);
+        new CollectionOf(null);
     }
 }

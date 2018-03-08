@@ -1,8 +1,8 @@
 <?php
 
-namespace Abacus11\Collections\Doctrine;
+namespace Abacus11\Doctrine\Collections;
 
-class Doubles extends ArrayOf
+class Doubles extends CollectionOf
 {
     /**
      * Collection of doubles

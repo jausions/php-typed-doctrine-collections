@@ -1,11 +1,11 @@
 <?php
 
-namespace Abacus11\Collections\Doctrine;
+namespace Abacus11\Doctrine\Collections;
 
 use Abacus11\Collections\TypedCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class ArrayOf extends ArrayCollection implements TypedCollection
+class CollectionOf extends ArrayCollection implements TypedCollection
 {
     use TypedCollectionTrait;
 
@@ -14,26 +14,26 @@ class ArrayOf extends ArrayCollection implements TypedCollection
      *
      * Without any arguments:
      * <code>
-     * new ArrayOf();       // Type is undefined
+     * new CollectionOf();       // Type is undefined
      * </code>
      *
      * With a type:
      * <code>
-     * new ArrayOf('integer');
-     * new ArrayOf('integer', []);
-     * new ArrayOf('integer', [1, 2, 3]);
+     * new CollectionOf('integer');
+     * new CollectionOf('integer', []);
+     * new CollectionOf('integer', [1, 2, 3]);
      * </code>
      *
      * With an initial array:
      * <code>
-     * new ArrayOf([]);     // Type is undefined
-     * new ArrayOf([1, 2, 3]);
+     * new CollectionOf([]);     // Type is undefined
+     * new CollectionOf([1, 2, 3]);
      * </code>
      *
      * With a closure:
      * <code>
-     * new ArrayOf(function($i) {return is_integer($i);});
-     * new ArrayOf(function($i) {return is_integer($i);}, [1, 2, 3]);
+     * new CollectionOf(function($i) {return is_integer($i);});
+     * new CollectionOf(function($i) {return is_integer($i);}, [1, 2, 3]);
      * </code>
      *
      * @param array|string|\Closure $definition
@@ -42,8 +42,8 @@ class ArrayOf extends ArrayCollection implements TypedCollection
      * @throws \Exception
      * @throws \TypeError
      *
-     * @see ArrayOf::setElementType()
-     * @see ArrayOf::setElementTypeLike()
+     * @see CollectionOf::setElementType()
+     * @see CollectionOf::setElementTypeLike()
      */
     public function __construct(...$definition)
     {

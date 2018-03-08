@@ -1,6 +1,6 @@
 <?php
 
-namespace Abacus11\Collections\Doctrine;
+namespace Abacus11\Doctrine\Collections;
 
 /**
  * Trait to implement constraints on elements of a Doctrine collection

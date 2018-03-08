@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Numbers;
+use Abacus11\Doctrine\Collections\Numbers;
 use PHPUnit\Framework\TestCase;
 
 class NumbersTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Numbers::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Numbers::__construct()
      */
     public function testNumberCollectionAcceptsOnlyNumbers()
     {

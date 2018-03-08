@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Integers;
+use Abacus11\Doctrine\Collections\Integers;
 use PHPUnit\Framework\TestCase;
 
 class IntegersTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Integers::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Integers::__construct()
      */
     public function testIntegerCollectionAcceptsOnlyIntegers()
     {

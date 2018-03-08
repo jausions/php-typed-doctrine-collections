@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Strings;
+use Abacus11\Doctrine\Collections\Strings;
 use PHPUnit\Framework\TestCase;
 
 class StringsTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Strings::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Strings::__construct()
      */
     public function testStringCollectionAcceptsOnlyStrings()
     {

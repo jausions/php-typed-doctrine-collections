@@ -1,12 +1,12 @@
 <?php
 
-use Abacus11\Collections\Doctrine\Objects;
+use Abacus11\Doctrine\Collections\Objects;
 use PHPUnit\Framework\TestCase;
 
 class CollectionOfObjectsTest extends TestCase
 {
     /**
-     * @covers \Abacus11\Collections\Doctrine\Objects::__construct()
+     * @covers \Abacus11\Doctrine\Collections\Objects::__construct()
      */
     public function testObjectCollectionAcceptsOnlyObjects()
     {
