@@ -1,4 +1,4 @@
-# Typed Collections
+# Typed Doctrine Collections
 
 Type hinting is evolving but PHP 7 still does not currently provide
 a way to define the type of the elements of an array (a.k.a. Generics.)
