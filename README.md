@@ -1,7 +1,7 @@
 # Typed Collections
 
 Type hinting is evolving but PHP 7 still does not currently provide
-a way to define the type of the elements of an array.
+a way to define the type of the elements of an array (a.k.a. Generics.)
 
 This library is built on top of Doctrine/Collections to enforce type
 checking on elements added to a collection. We could also call them

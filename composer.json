@@ -2,7 +2,6 @@
   "name": "jausions/php-typed-doctrine-collections",
   "description": "Typed Doctrine collections (Pseudo-arrays with type constraint)",
   "type": "library",
-  "minimum-stability": "beta",
   "license": "MIT",
   "authors": [
     {
@@ -12,7 +11,7 @@
   ],
   "require": {
     "doctrine/collections": "^v1.5",
-    "jausions/php-typed-collections": "^v1.0@dev"
+    "jausions/php-typed-collections": "^v1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.0",
