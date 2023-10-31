@@ -2,6 +2,8 @@
 
 namespace Abacus11\Doctrine\Collections;
 
+use Abacus11\Collections\TypedCollection;
+
 class Resources extends CollectionOf
 {
     /**
@@ -10,13 +12,9 @@ class Resources extends CollectionOf
      * Each element of the collection is a resource
      *
      * @param resource[] $elements
-     *
-     * @throws \AssertionError
-     * @throws \Exception
-     * @throws \TypeError
      */
     public function __construct(array $elements = [])
     {
-        parent::__construct('resource', $elements);
+        parent::__construct(TypedCollection::OF_PHP_RESOURCES, $elements);
     }
 }

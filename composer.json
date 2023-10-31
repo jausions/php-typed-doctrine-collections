@@ -10,14 +10,23 @@
     }
   ],
   "require": {
-    "doctrine/collections": "^v1.5",
-    "jausions/php-typed-collections": "^v1.0"
+    "doctrine/collections": "*",
+    "jausions/php-typed-collections": "dev-v2.0.0-alpha"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.0",
-    "fzaninotto/faker": "^v1.7"
+    "ext-json": "*",
+    "fakerphp/faker": "*",
+    "phpunit/phpunit": "*"
   },
   "autoload": {
-    "psr-4": {"Abacus11\\": "src/"}
-  }
+    "psr-4": {
+      "Abacus11\\": "src/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/jausions/php-typed-collections"
+    }
+  ]
 }

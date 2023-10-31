@@ -1,17 +1,19 @@
 <?php
 
+use Abacus11\Collections\Exception\InvalidArgumentTypeException;
 use Abacus11\Doctrine\Collections\Strings;
-use PHPUnit\Framework\TestCase;
 
-class StringsTest extends TestCase
+require_once __DIR__ . '/TestCase.php';
+
+class StringsTest extends \TestCase
 {
     /**
      * @covers \Abacus11\Doctrine\Collections\Strings::__construct()
      */
-    public function testStringCollectionAcceptsOnlyStrings()
+    public function testStringCollectionShouldOnlyAcceptStrings()
     {
         $collection = new Strings(['abc', '']);
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[] = true;
     }
 }

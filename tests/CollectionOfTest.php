@@ -1,46 +1,57 @@
 <?php
 
+use Abacus11\Collections\Exception\CannotChangeTypeException;
+use Abacus11\Collections\Exception\InvalidArgumentTypeException;
+use Abacus11\Collections\Exception\InvalidSampleException;
+use Abacus11\Collections\Exception\TypeNotSetException;
 use Abacus11\Doctrine\Collections\CollectionOf;
-use PHPUnit\Framework\TestCase;
+use Doctrine\Common\Collections\ArrayCollection;
+use Faker\Factory;
+
+require_once __DIR__ . '/TestCase.php';
+
+class SomeTestClass {}
+
+class SomeTestClassExtended extends SomeTestClass {}
 
 /**
  * Test cases for Abacus11\Collections\Doctrine\CollectionOf class
  */
-class CollectionOfTest extends TestCase
+class CollectionOfTest extends \TestCase
 {
     /**
      * Provides a list of matching type / value pairs
      *
      * @return array
      */
-    public function basicTypedElementsProvider(): array
+    public static function basicTypedElementsProvider()
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
 
         return [
-            ['string', $faker->words(3, true)],
-            ['integer', $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX)],
+            ['array', $faker->words],
+            ['boolean', $faker->boolean],
+            ['callable', $faker->randomElement([
+                function() {},
+                function($a) {return $a;},
+                'strtolower',
+                [__CLASS__, __FUNCTION__],
+            ])],
             ['double', $faker->randomFloat()],
+            ['integer', $faker->numberBetween(-2147483646)],
             ['number', $faker->randomElement([
-                $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX),
+                $faker->numberBetween(-2147483646),
                 $faker->randomFloat(),
                 $faker->numerify('########'),
                 $faker->numerify('#####.###'),
                 $faker->numerify('-#####'),
                 $faker->numerify('-#####.##'),
             ])],
-            ['array', $faker->words],
-            ['boolean', $faker->boolean],
             ['object', new stdClass()],
-            ['callable', $faker->randomElement([
-                function() {},
-                function($a) {return $a;},
-                'strtolower',
-                [$this, __FUNCTION__],
-            ])],
-            ['resource', fopen(__FILE__, 'r')],
-            [__CLASS__, $this],
-            [__CLASS__, new class extends CollectionOfTest {}],
+            ['resource', fopen(__FILE__, 'rb')],
+            ['string', $faker->words(3, true)],
+            [SomeTestClass::class, new SomeTestClass()],
+            [SomeTestClass::class, new SomeTestClassExtended()],
         ];
     }
 
@@ -49,52 +60,52 @@ class CollectionOfTest extends TestCase
      *
      * @return array
      */
-    public function mismatchedBasicTypedElementsProvider(): array
+    public static function mismatchedBasicTypedElementsProvider()
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
 
         // Type => alias types
         $aliases = [
-            'string' => ['string', 'text', 'string_number', 'json', 'string_callable'],
-            'text' => ['string', 'text', 'string_number', 'json', 'string_callable'],
-            'int' => ['int', 'integer'],
-            'integer' => ['int', 'integer'],
-            'float' => ['float', 'double'],
-            'double' => ['float', 'double'],
-            'number' => ['int', 'integer', 'float', 'double', 'number', 'string_number'],
-            'boolean' => ['bool', 'boolean'],
-            'bool' => ['bool', 'boolean'],
-            'object' => ['object', 'closure', 'function', 'callable', 'callback'],
             'array' => ['array', 'array_callback'],
-            'json' => ['json', 'string_number', 'string_callable'],
-            'closure' => ['closure', 'function', 'callable', 'callback', 'string_callable', 'array_callback'],
-            'function' => ['closure', 'function', 'callable', 'callback', 'string_callable', 'array_callback'],
+            'bool' => ['bool', 'boolean'],
+            'boolean' => ['bool', 'boolean'],
             'callable' => ['closure', 'function', 'callable', 'callback', 'string_callable', 'array_callback'],
             'callback' => ['closure', 'function', 'callable', 'callback', 'string_callable', 'array_callback'],
+            'closure' => ['closure', 'function', 'callable', 'callback', 'string_callable', 'array_callback'],
+            'double' => ['float', 'double'],
+            'float' => ['float', 'double'],
+            'function' => ['closure', 'function', 'callable', 'callback', 'string_callable', 'array_callback'],
+            'int' => ['int', 'integer'],
+            'integer' => ['int', 'integer'],
+            'json' => ['json', 'string_number', 'string_callable'],
+            'number' => ['int', 'integer', 'float', 'double', 'number', 'string_number'],
+            'object' => ['object', 'closure', 'function', 'callable', 'callback'],
+            'string' => ['string', 'text', 'string_number', 'json', 'string_callable'],
+            'text' => ['string', 'text', 'string_number', 'json', 'string_callable'],
         ];
 
         $values = [
+            'array' => $faker->words,
+            'boolean' => $faker->boolean,
+            'callable' => $faker->randomElement([
+                ['array_callback', [__CLASS__, __FUNCTION__]],
+                ['callable', function() {}],
+                ['callable', function($a) {return $a;}],
+                ['string_callable', 'strtolower'],
+            ]),
+            'double' => $faker->randomFloat(),
+            'integer' => $faker->numberBetween(-2147483646),
             'json' => '{ "key": "value" }',
             'number' => $faker->randomElement([
-                ['integer', $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX)],
                 ['double', $faker->randomFloat()],
+                ['integer', $faker->numberBetween(-2147483646)],
                 ['string_number', $faker->numerify('######')],
                 ['string_number', $faker->numerify('##.###')],
                 ['string_number', $faker->numerify('-#####')],
                 ['string_number', $faker->numerify('-##.##')],
             ]),
-            'string' => $faker->words(3, true),
-            'integer' => $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX),
-            'double' => $faker->randomFloat(),
-            'boolean' => $faker->boolean,
-            'array' => $faker->words,
             'object' => new stdClass(),
-            'callable' => $faker->randomElement([
-                ['array_callback', [$this, __FUNCTION__]],
-                ['callable', function() {}],
-                ['callable', function($a) {return $a;}],
-                ['string_callable', 'strtolower'],
-            ]),
+            'string' => $faker->words(3, true),
         ];
 
         $data = [];
@@ -118,27 +129,27 @@ class CollectionOfTest extends TestCase
      *
      * @return array
      */
-    public function sampleTypedElementsProvider(): array
+    public static function sampleTypedElementsProvider()
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
 
         return [
-            ['string', $faker->words(3, true), $faker->words(3, true)],
-            ['string', '', $faker->words(3, true)],
-            ['integer', $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX), $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX)],
-            ['integer', 0, $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX)],
-            ['double', $faker->randomFloat(), $faker->randomFloat()],
-            ['double', 0.0, $faker->randomFloat()],
             ['array', $faker->words, $faker->words],
             ['array', [], $faker->words],
             ['boolean', true, $faker->boolean],
             ['boolean', false, $faker->boolean],
-            ['object', new stdClass(), new class extends stdClass {}],
-            ['object', $this, $this],
-            ['resource', fopen(__FILE__, 'r'), opendir(__DIR__)],
             ['callback', function() {}, function($a) {return $a;}],
-            ['callback', function() {}, [$this, __FUNCTION__]],
-            ['callback', function($a) {return $a;}, 'strtolower'],
+            ['callback', function() {}, [__CLASS__, __FUNCTION__]],
+            ['callback', function($a) { return $a; }, 'strtolower'],
+            ['double', $faker->randomFloat(), $faker->randomFloat()],
+            ['double', 0.0, $faker->randomFloat()],
+            ['integer', $faker->numberBetween(-2147483646), $faker->numberBetween(-2147483646)],
+            ['integer', 0, $faker->numberBetween(-2147483646)],
+            ['object', new stdClass(), (object) []],
+            ['object', new SomeTestClass(), new SomeTestClass()],
+            ['resource', fopen(__FILE__, 'rb'), opendir(__DIR__)],
+            ['string', $faker->words(3, true), $faker->words(3, true)],
+            ['string', '', $faker->words(3, true)],
         ];
     }
 
@@ -147,34 +158,34 @@ class CollectionOfTest extends TestCase
      *
      * @return array
      */
-    public function mismatchedSampleTypedElementsProvider(): array
+    public static function mismatchedSampleTypedElementsProvider()
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
 
         $samples = [
-            'string' => $faker->words(3, true),
-            'integer' => $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX),
-            'double' => $faker->randomFloat(),
             'array' => $faker->words,
             'boolean' => $faker->boolean,
-            'object' => new class extends stdClass {},
-            'resource' => fopen(__FILE__, 'r'),
             'callback' => function() {},
+            'double' => $faker->randomFloat(),
+            'integer' => $faker->numberBetween(-2147483646),
+            'object' => (object) [],
+            'resource' => fopen(__FILE__, 'rb'),
+            'string' => $faker->words(3, true),
         ];
 
         $values = [
-            'string' => $faker->words(3, true),
-            'integer' => $faker->numberBetween(PHP_INT_MIN, PHP_INT_MAX),
-            'double' => $faker->randomFloat(),
             'array' => $faker->words,
             'boolean' => $faker->boolean,
-            'object' => new class extends stdClass {},
-            'resource' => opendir(__DIR__),
             'callback' => $faker->randomElement([
                 ['object', function() {}],
-                ['array', [$this, __FUNCTION__]],
+                ['array', [__CLASS__, __FUNCTION__]],
                 ['string', 'strtoupper'],
             ]),
+            'double' => $faker->randomFloat(),
+            'integer' => $faker->numberBetween(-2147483646),
+            'object' => (object) [],
+            'resource' => opendir(__DIR__),
+            'string' => $faker->words(3, true),
         ];
 
         $data = [];
@@ -202,9 +213,9 @@ class CollectionOfTest extends TestCase
      *
      * @return array
      */
-    public function validJSONEncodedValuesProvider(): array
+    public static function validJSONEncodedValuesProvider()
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
 
         $object = new stdClass();
         $object->prop_1 = $faker->words;
@@ -228,11 +239,11 @@ class CollectionOfTest extends TestCase
      *
      * @return array
      */
-    public function invalidJSONEncodedValuesProvider(): array
+    public static function invalidJSONEncodedValuesProvider()
     {
         return [
             ['unquoted text'],
-            ['{ "key": "<div class="coolCSS">some text</div>" }'],
+            ['{ "key": "<div style="color:yellow;">some text</div>" }'],
             ['{ key: \'value\' }'],
             ['{ key: ["value", .5, 
 	{ "test": 56, 
@@ -249,7 +260,7 @@ class CollectionOfTest extends TestCase
      * @dataProvider basicTypedElementsProvider
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::isElementType()
      */
-    public function testValueIsValidForSameTypeCollection($type, $value): void
+    public function testValueShouldBeValidForSameTypeCollection($type, $value)
     {
         $collection = (new CollectionOf())->setElementType($type);
         $this->assertTrue($collection->isElementType($value));
@@ -262,7 +273,7 @@ class CollectionOfTest extends TestCase
      * @dataProvider mismatchedBasicTypedElementsProvider
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::isElementType()
      */
-    public function testValueIsInvalidForMismatchedTypeCollection($type, $type_element, $value): void
+    public function testValueShouldNotBeValidForMismatchedTypeCollection($type, $type_element, $value)
     {
         $collection = (new CollectionOf())->setElementType($type);
         $this->assertFalse($collection->isElementType($value));
@@ -276,7 +287,7 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
-    public function testCanAddValueToSameTypeCollection($type, $value): void
+    public function testAddingValueToSameTypeCollectionShouldBePossible($type, $value)
     {
         $collection = (new CollectionOf())->setElementType($type);
         $collection[] = $value;
@@ -290,7 +301,7 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
-    public function testCanAddValidJSONToJSONCollection($value): void
+    public function testAddingValidJSONToJSONCollectionShouldBePossible($value)
     {
         $collection = (new CollectionOf())->setElementType('json');
         $collection[] = $value;
@@ -304,11 +315,11 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
-    public function testCannotAddInvalidJSONToJSONCollection($value): void
+    public function testAddingInvalidJSONToJSONCollectionShouldNotBePossible($value)
     {
         $collection = (new CollectionOf())->setElementType('json');
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[] = $value;
     }
 
@@ -321,11 +332,11 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
-    public function testCannotAddWrongBasicTypeToCollection($type_collection, $type_element, $element): void
+    public function testAddWrongBasicTypeToCollectionShouldNotBePossible($type_collection, $type_element, $element)
     {
         $collection = (new CollectionOf())->setElementType($type_collection);
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[] = $element;
     }
 
@@ -333,11 +344,11 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::add()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::add()
      */
-    public function testCannotAddElementToNonTypedCollection(): void
+    public function testAddingElementToNonTypedCollectionShouldNotBePossible()
     {
         $collection = new CollectionOf();
 
-        $this->expectException(\Error::class);
+        $this->expectException(TypeNotSetException::class);
         $collection[] = true;
     }
 
@@ -349,7 +360,7 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
-    public function testCanAddValueWithKeyToSameTypeCollection($type, $value): void
+    public function testSettingValueAtIndexInSameTypeCollectionShouldBePossible($type, $value)
     {
         $collection = (new CollectionOf())->setElementType($type);
         $collection['abc'] = $value;
@@ -363,7 +374,7 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
-    public function testCanAddValidJSONWithKeyToJSONCollection($value): void
+    public function testSettingValidJSONAtIndexInJSONCollectionShouldBePossible($value)
     {
         $collection = (new CollectionOf())->setElementType('json');
         $collection['xyz'] = $value;
@@ -377,11 +388,11 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
-    public function testCannotAddInvalidJSONWithKeyToJSONCollection($value): void
+    public function testSettingInvalidJSONAtIndexInJSONCollectionShouldNotBePossible($value)
     {
         $collection = (new CollectionOf())->setElementType('json');
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[123] = $value;
     }
 
@@ -394,12 +405,12 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
-    public function testCannotAddWrongBasicTypeWithKeyToCollection($type_collection, $type_element, $element): void
+    public function testSettingWrongBasicTypeAtIndexInCollectionShouldNotBePossible($type_collection, $type_element, $element)
     {
         $collection = new CollectionOf();
         $collection->setElementType($type_collection);
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection['456'] = $element;
     }
 
@@ -407,45 +418,46 @@ class CollectionOfTest extends TestCase
      * @covers \Abacus11\Doctrine\Collections\TypedCollectionTrait::set()
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::set()
      */
-    public function testCannotAddElementWithKeyToNonConfiguredCollection(): void
+    public function testSettingElementAtIndexInNonConfiguredCollectionShouldNotBePossible()
     {
         $collection = new CollectionOf();
 
-        $this->expectException(\Error::class);
+        $this->expectException(TypeNotSetException::class);
         $collection[0] = true;
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementType()
      */
-    public function testCannotChangeTheTypeOfNonEmptyCollection(): void
+    public function testChangingTheTypeOfNonEmptyCollectionShouldNotBePossible()
     {
         $collection = new CollectionOf();
         $collection->setElementType('string');
-        $collection[] = (\Faker\Factory::create())->word;
+        $faker = Factory::create();
+        $collection[] = $faker->word;
 
-        $this->expectException(\Exception::class);
+        $this->expectException(CannotChangeTypeException::class);
         $collection->setElementType('bool');
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementType()
      */
-    public function testCannotChangeTheTypeOfTypedCollection(): void
+    public function testChangingTheTypeOfTypedCollectionShouldNotBePossible()
     {
         $collection = new CollectionOf();
         $collection->setElementType('string');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(CannotChangeTypeException::class);
         $collection->setElementType('bool');
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementTypeLike()
      */
-    public function testCannotUseNullAsSampleType(): void
+    public function testUsingNullAsSampleTypeShouldNotBePossible()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidSampleException::class);
         (new CollectionOf())->setElementTypeLike(null);
     }
 
@@ -457,7 +469,7 @@ class CollectionOfTest extends TestCase
      * @dataProvider sampleTypedElementsProvider
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementTypeLike()
      */
-    public function testCanAddValidValueToLikeElementTypeCollection($type, $sample, $value): void
+    public function testAddingValidValueToLikeElementTypeCollectionShouldBePossible($type, $sample, $value)
     {
         $collection = new CollectionOf();
         $collection->setElementTypeLike($sample)
@@ -474,38 +486,38 @@ class CollectionOfTest extends TestCase
      * @dataProvider mismatchedSampleTypedElementsProvider
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::setElementTypeLike()
      */
-    public function testCannotAddInvalidValueToLikeElementTypeCollection($sample_type, $sample, $value_type, $value): void
+    public function testAddingInvalidValueToLikeElementTypeCollectionShouldNotBePossible($sample_type, $sample, $value_type, $value)
     {
         $collection = (new CollectionOf())->setElementTypeLike($sample);
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[] = $value;
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
-    public function testFirstElementBlocksWrongInitialValues()
+    public function testFirstElementShouldBlockFollowingWrongInitialValues()
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         new CollectionOf([1, '2', false, 2.5]);
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
-    public function testFirstElementSetsTypeOfCollection()
+    public function testFirstElementShouldSetTheTypeOfCollection()
     {
         $collection = new CollectionOf([1]);
 
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[] = 'xyz';
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
-    public function testFirstElementLetsValidInitialValues()
+    public function testFirstElementShouldLetPassFollowingValidInitialValues()
     {
         $collection = new CollectionOf([0, 1, 2, 3, 4]);
         $this->assertEquals($collection[4], 4);
@@ -514,27 +526,57 @@ class CollectionOfTest extends TestCase
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
-    public function testCannotInitializeCollectionWithNullValue()
+    public function testInitializingCollectionWithNullValueShouldNotBePossible()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidSampleException::class);
         new CollectionOf([null, 'abc']);
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
-    public function testCannotInitializeCollectionWithNullType()
+    public function testInitializingCollectionWithNullTypeShouldNotBePossible()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new CollectionOf(null, ['abc', 'xyz']);
     }
 
     /**
      * @covers \Abacus11\Doctrine\Collections\CollectionOf::__construct()
      */
-    public function testCannotInitializeCollectionWithNullSingleArgument()
+    public function testInitializingCollectionWithNullSingleArgumentShouldNotBePossible()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new CollectionOf(null);
+    }
+
+    /**
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::map()
+     */
+    public function testMapShouldReturnANewUntypedCollection()
+    {
+        $collection = new CollectionOf('string', ['abc', 'vwxyz']);
+        $mapped = $collection->map(function($value) {
+            return strlen($value);
+        });
+        $this->assertNotInstanceOf(CollectionOf::class, $mapped);
+        $this->assertInstanceOf(ArrayCollection::class, $mapped);
+        $this->assertEquals([3, 5], $mapped->toArray());
+    }
+
+    /**
+     * @covers \Abacus11\Doctrine\Collections\CollectionOf::mapOf()
+     */
+    public function testTypedMapShouldReturnANewTypedCollection()
+    {
+        $collection = new CollectionOf('string', ['abc', 'uvwxyz']);
+        $mapped = $collection->mapOf(function($value) {
+            return strlen($value);
+        });
+        $this->assertInstanceOf(CollectionOf::class, $mapped);
+        $this->assertEquals([3, 6], $mapped->toArray());
+
+        $this->expectException(InvalidArgumentTypeException::class);
+        $mapped[] = 'efghij';
     }
 }

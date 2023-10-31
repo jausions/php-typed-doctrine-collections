@@ -2,10 +2,12 @@
 
 namespace Abacus11\Doctrine\Collections;
 
+use Abacus11\Collections\Exception\InvalidArgumentTypeException;
+use Abacus11\Collections\Exception\TypeNotSetException;
+
 /**
  * Trait to implement constraints on elements of a Doctrine collection
  *
- * @author Philippe Jausions <Philippe.Jausions@11abacus.com>
  * @see \Doctrine\Common\Collections\Collection
  */
 trait TypedCollectionTrait
@@ -19,13 +21,13 @@ trait TypedCollectionTrait
      *
      * @return bool Always TRUE.
      *
-     * @throws \TypeError when the value doesnt match the criteria
-     * @throws \AssertionError when the criteria is not set
+     * @throws InvalidArgumentTypeException when the value does not match the criterion of the collection
+     * @throws TypeNotSetException when the criterion is not set
      */
-    public function add($element): bool
+    public function add($element)
     {
         if (!$this->isElementType($element)) {
-            throw new \TypeError('The value does not comply with the criteria for the collection.');
+            throw new InvalidArgumentTypeException('The value does not comply with the criterion for the collection.');
         }
         return parent::add($element);
     }
@@ -38,13 +40,13 @@ trait TypedCollectionTrait
      *
      * @return void
      *
-     * @throws \TypeError when the value doesnt match the criteria
-     * @throws \AssertionError when the criteria is not set
+     * @throws InvalidArgumentTypeException when the value does not match the criterion of the collection
+     * @throws TypeNotSetException when the criterion is not set
      */
-    public function set($key, $value): void
+    public function set($key, $value)
     {
         if (!$this->isElementType($value)) {
-            throw new \TypeError('The value does not comply with the criteria for the collection.');
+            throw new InvalidArgumentTypeException('The value does not comply with the criterion for the collection.');
         }
         parent::set($key, $value);
     }

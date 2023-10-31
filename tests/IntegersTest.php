@@ -1,17 +1,19 @@
 <?php
 
+use Abacus11\Collections\Exception\InvalidArgumentTypeException;
 use Abacus11\Doctrine\Collections\Integers;
-use PHPUnit\Framework\TestCase;
 
-class IntegersTest extends TestCase
+require_once __DIR__ . '/TestCase.php';
+
+class IntegersTest extends \TestCase
 {
     /**
      * @covers \Abacus11\Doctrine\Collections\Integers::__construct()
      */
-    public function testIntegerCollectionAcceptsOnlyIntegers()
+    public function testIntegerCollectionShouldOnlyAcceptIntegers()
     {
         $collection = new Integers([1, 0, 2]);
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[2] = 'Hello world!';
     }
 }

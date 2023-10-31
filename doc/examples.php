@@ -1,6 +1,8 @@
 <?php
 
 require '../vendor/autoload.php';
+
+use Abacus11\Collections\Exception\InvalidArgumentTypeException;
 use Abacus11\Doctrine\Collections\CollectionOf;
 
 
@@ -9,7 +11,7 @@ use Abacus11\Doctrine\Collections\CollectionOf;
 $int_array = new CollectionOf([1, 2]);
 try {
     $int_array = new CollectionOf([1, '2']);
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 1. '.$e->getMessage().PHP_EOL;
 }
 try {
@@ -27,7 +29,7 @@ $int_array = (new CollectionOf())->setElementTypeLike($sample);
 $int_array[] = 2;
 try {
     $int_array[] = true;
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 3. '.$e->getMessage().PHP_EOL;
 }
 
@@ -39,7 +41,7 @@ $some = (new CollectionOf())->setElementTypeLike($sample);
 $some[] = new SomeClass();
 try {
     $some[] = new stdClass();
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 4. '.$e->getMessage().PHP_EOL;
 }
 
@@ -49,7 +51,7 @@ try {
 // Use setElementType() method
 
 $positive_int = (new CollectionOf())->setElementType(function ($value) {
-    if (!is_integer($value)) {
+    if (!is_int($value)) {
         return false;
     }
     return ($value >= 0);
@@ -59,7 +61,7 @@ $positive_int['apples'] = 0;
 $positive_int['oranges'] = 10;
 try {
     $positive_int['bananas'] = -5;
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 5. '.$e->getMessage().PHP_EOL;
 }
 
@@ -67,7 +69,7 @@ try {
 
 $negative_int = new CollectionOf(
     function ($value) {
-        if (!is_integer($value)) {
+        if (!is_int($value)) {
             return false;
         }
         return ($value <= 0);
@@ -77,7 +79,7 @@ $negative_int = new CollectionOf(
 $negative_int[] = -50;
 try {
     $negative_int[] = 5;
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 6. '.$e->getMessage().PHP_EOL;
 }
 
@@ -98,7 +100,7 @@ $some_a[] = new A();
 $some_a[] = new AA();
 try {
     $some_a[] = new B();
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 7. '.$e->getMessage().PHP_EOL;
 }
 
@@ -109,7 +111,7 @@ $some_b = new CollectionOf(B::class);
 $some_b[] = new B();
 try {
     $some_b[] = new A();
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 8. '.$e->getMessage().PHP_EOL;
 }
 
@@ -123,7 +125,7 @@ $int_array = (new CollectionOf())->setElementType('integer');
 $int_array[] = 1;
 try {
     $int_array[] = '1';
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo ' 9. '.$e->getMessage().PHP_EOL;
 }
 
@@ -134,7 +136,7 @@ $int_array = new CollectionOf('integer');
 $int_array[] = 20;
 try {
     $int_array[] = true;
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo '10. '.$e->getMessage().PHP_EOL;
 }
 
@@ -146,11 +148,11 @@ $integers = new \Abacus11\Doctrine\Collections\Integers([1, 2, 3, 0, -1]);
 
 ## Custom Type Collections
 
-class Vehicle
+interface Vehicle
 {
 }
 
-class Car extends Vehicle
+class Car implements Vehicle
 {
     public $make;
     public $model;
@@ -158,7 +160,7 @@ class Car extends Vehicle
     public $license_plate_number;
 }
 
-class Submarine extends Vehicle
+class Submarine implements Vehicle
 {
     public $name;
 }
@@ -178,9 +180,7 @@ class Cars extends CollectionOf
 
 class Parking
 {
-    /**
-     * @var Cars
-     */
+    /** @var Cars */
     protected $lot;
 
     public function __construct()
@@ -196,7 +196,7 @@ class Parking
     /**
      * @return Car[] The collection of cars
      */
-    public function getCars(): Cars
+    public function getCars()
     {
         return $this->lot;
     }
@@ -217,7 +217,7 @@ $parking = new Parking();
 $parking->enter($my_car);
 try {
     $parking->enter($my_sub);
-} catch (\TypeError $e) {
+} catch (InvalidArgumentTypeException $e) {
     echo '11. '.$e->getMessage().PHP_EOL;
 }
 

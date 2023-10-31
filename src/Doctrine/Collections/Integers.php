@@ -2,6 +2,8 @@
 
 namespace Abacus11\Doctrine\Collections;
 
+use Abacus11\Collections\TypedCollection;
+
 class Integers extends CollectionOf
 {
     /**
@@ -10,13 +12,9 @@ class Integers extends CollectionOf
      * Each element of the collection is an integer
      *
      * @param integer[] $elements
-     *
-     * @throws \AssertionError
-     * @throws \Exception
-     * @throws \TypeError
      */
     public function __construct(array $elements = [])
     {
-        parent::__construct('integer', $elements);
+        parent::__construct(TypedCollection::OF_INTEGERS, $elements);
     }
 }

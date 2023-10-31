@@ -1,17 +1,19 @@
 <?php
 
+use Abacus11\Collections\Exception\InvalidArgumentTypeException;
 use Abacus11\Doctrine\Collections\JSONs;
-use PHPUnit\Framework\TestCase;
 
-class JSONsTest extends TestCase
+require_once __DIR__ . '/TestCase.php';
+
+class JSONsTest extends \TestCase
 {
     /**
      * @covers \Abacus11\Doctrine\Collections\JSONs::__construct()
      */
-    public function testJSONCollectionAcceptsOnlyJSON()
+    public function testJSONCollectionShouldOnlyAcceptsJSON()
     {
         $collection = new JSONs(['null', '{"key":"value"}']);
-        $this->expectException(\TypeError::class);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection['other'] = function() {};
     }
 }

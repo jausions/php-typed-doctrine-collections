@@ -1,17 +1,19 @@
 <?php
 
+use Abacus11\Collections\Exception\InvalidArgumentTypeException;
 use Abacus11\Doctrine\Collections\Objects;
-use PHPUnit\Framework\TestCase;
 
-class CollectionOfObjectsTest extends TestCase
+require_once __DIR__ . '/TestCase.php';
+
+class ObjectsTest extends \TestCase
 {
     /**
      * @covers \Abacus11\Doctrine\Collections\Objects::__construct()
      */
-    public function testObjectCollectionAcceptsOnlyObjects()
+    public function testObjectCollectionShouldOnlyAcceptObjects()
     {
-        $collection = new Objects([new stdClass(), new class {}, function() {}, $this]);
-        $this->expectException(\TypeError::class);
+        $collection = new Objects([new stdClass(), function() {}, $this]);
+        $this->expectException(InvalidArgumentTypeException::class);
         $collection[] = 'text';
     }
 }
